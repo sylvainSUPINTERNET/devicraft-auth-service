@@ -6,8 +6,6 @@ import { GoogleClaims } from './types/GoogleClaims';
 
 
 
-
-
 @Controller('/auth')
 export class AppController {
   constructor(private readonly appService: AppService, private readonly jwtService: JwtService) {}
@@ -41,21 +39,7 @@ export class AppController {
         token_type,
         scope
       } = await resp.json();
-
- 
-      // const jwtAccessToken = await this.jwtService.signAsync(
-      //   { sub: user.id },
-      //   {
-      //     expiresIn: '15m',            // very standard
-      //   },
-      // );
-
-      // TODO : save refresh token to this user in DB
-      // TODO : add a service to validate the token for each request ( if no cookie = user is disconnected OR token expired, check in DB refresh ? yes => get new access token with refresh token, no => redirect to login )
-      // TODO : create a logout endpoint to delete refresh token from DB
-      // TODO : faire le endpoint qui check ( ici ) chaque requête
-      // TODO : faire la table "user" et foutre le .sql ici
-
+      
 
       res.cookie('devicraft_google_user_info', access_token, {
         httpOnly: true,
