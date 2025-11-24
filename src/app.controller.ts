@@ -1,18 +1,23 @@
 import { Controller, Get, HttpStatus, Req, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import type {Request, Response} from 'express';
+import { JwtService } from '@nestjs/jwt';
+import { GoogleClaims } from './types/GoogleClaims';
+
+
+
 
 
 @Controller('/auth')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService, private readonly jwtService: JwtService) {}
 
   readonly AUTH_GOOGLE_COOKIE_NAME = 'devicraft_google_tok';
 
   @Get('/google/callback')
   async googleAuthCallback(@Req() req:Request, @Res() res: Response) {
-    try {
 
+    try {
       const code = req.query.code;
       const resp = await fetch(`https://oauth2.googleapis.com/token`, {
         method: 'POST',
@@ -36,6 +41,14 @@ export class AppController {
         token_type,
         scope
       } = await resp.json();
+
+ 
+      // const jwtAccessToken = await this.jwtService.signAsync(
+      //   { sub: user.id },
+      //   {
+      //     expiresIn: '15m',            // very standard
+      //   },
+      // );
 
       // TODO : save refresh token to this user in DB
       // TODO : add a service to validate the token for each request ( if no cookie = user is disconnected OR token expired, check in DB refresh ? yes => get new access token with refresh token, no => redirect to login )
