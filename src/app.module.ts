@@ -6,6 +6,11 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
+
+const entities = [
+  User
+];
 
 @Module({
   imports: [
@@ -17,14 +22,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: process.env.NEONDB_USER,
       password: process.env.NEONDB_PASSWORD,
       database: process.env.NEONDB_DATABASE,
-      entities: [
-        __dirname + '/**/entities/*{.ts,.js}',
-      ],
+      entities,
       synchronize: false,
       ssl: {
         rejectUnauthorized: false
       },
     }),
+    TypeOrmModule.forFeature(entities),
       ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     })],
