@@ -4,8 +4,6 @@ import type {Request, Response} from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { GoogleClaims } from './types/GoogleClaims';
 
-
-
 @Controller('/auth')
 export class AppController {
   constructor(private readonly appService: AppService, private readonly jwtService: JwtService) {}
@@ -39,7 +37,9 @@ export class AppController {
         token_type,
         scope
       } = await resp.json();
-      
+
+
+      await this.appService.createGoogleUser((this.jwtService.decode(id_token) as GoogleClaims));
 
       res.cookie('devicraft_google_user_info', access_token, {
         httpOnly: true,
